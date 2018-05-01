@@ -40,7 +40,7 @@ MAX_SEQUENCE_LENGTH = 1000
 MAX_NUM_WORDS = 20000
 EMBEDDING_DIM = 100
 VALIDATION_SPLIT = 0.2
-EPOCHS = 10
+EPOCHS = 20
 BATCH_SIZE = 512
 
 data_x_file = "/home/pzs2/707/data/data_x.txt"
@@ -91,7 +91,7 @@ print('Found %s unique tokens.' % len(word_index))
 
 data = pad_sequences(sequences, maxlen=MAX_SEQUENCE_LENGTH)
 
-### TODO: we need to change this to a number not categorical
+# TODO: we need to change this to a number not categorical
 # labels = to_categorical(np.asarray(labels))
 print('Shape of data tensor:', data.shape)
 
@@ -139,11 +139,12 @@ embedded_sequences = embedding_layer(sequence_input)
 
 
 print('Training model.')
-tbCallBack = TensorBoard(log_dir='./Graph/{}/'.format(st), histogram_freq=0, write_graph=True, write_images=True)
+tbCallBack = TensorBoard(log_dir='./Graph/{}/'.format(st),
+                         histogram_freq=0, write_graph=True, write_images=True)
 
 # train a 1D convnet with global maxpooling
 x = Conv1D(128, 5, activation='relu')(embedded_sequences)
-# x = GaussianNoise(0.2)(x)
+x = GaussianNoise(0.1)(x)
 x = MaxPooling1D(5)(x)
 # x = Conv1D(128, 5, activation='relu', kernel_regularizer=regularizers.l1(0.05))(x)
 x = Conv1D(128, 5, activation='relu')(x)
@@ -185,4 +186,3 @@ model.save(SAVE_DIR + "model.h5")
 # saving tokenizer
 with open(SAVE_DIR + 'tokenizer.pickle', 'wb') as handle:
     pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
