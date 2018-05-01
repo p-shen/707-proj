@@ -127,32 +127,32 @@ tbCallBack = TensorBoard(log_dir='./Graph/{}/'.format(st),
 
 # train a 1D convnet with global maxpooling
 x = Conv1D(NUM_HIDDEN_UNITS, 5, activation='relu')(embedded_sequences)
-x = GaussianNoise(0.1)(x)
+# x = GaussianNoise(0.1)(x)
 x = MaxPooling1D(5)(x)
-# x = Conv1D(128, 5, activation='relu', kernel_regularizer=regularizers.l1(0.05))(x)
-x = Conv1D(NUM_HIDDEN_UNITS, 5, activation='relu',
-           kernel_regularizer=regularizers.l1(0.01))(x)
-x = GlobalMaxPooling1D()(x)
-x = Dense(NUM_HIDDEN_UNITS, activation='relu')(x)
-x = Dropout(0.5)(x)
-x = Dense(NUM_HIDDEN_UNITS, activation='relu')(x)
-preds = Dense(1, activation='sigmoid')(x)
+x = Conv1D(NUM_HIDDEN_UNITS, 5, activation='relu']))(x)
+x=Dropout(0.3)(x)
+x=Conv1D(NUM_HIDDEN_UNITS, 5, activation = 'relu')(x)
+x=GlobalMaxPooling1D()(x)
+x=Dense(NUM_HIDDEN_UNITS, activation = 'relu')(x)
+x=Dropout(0.3)(x)
+x=Dense(NUM_HIDDEN_UNITS, activation = 'relu')(x)
+preds=Dense(1, activation = 'sigmoid')(x)
 
-model = Model(sequence_input, preds)
-opt = Adam(lr=0.0001)
-model.compile(loss='binary_crossentropy',
-              optimizer=opt,
-              metrics=['acc'], )
+model=Model(sequence_input, preds)
+opt=Adam(lr = 0.0001)
+model.compile(loss = 'binary_crossentropy',
+              optimizer= opt,
+              metrics = ['acc'], )
 
 model.fit(x_train, y_train,
-          batch_size=BATCH_SIZE,
-          epochs=EPOCHS,
-          validation_split=0.2,
-          callbacks=[tbCallBack],
-          verbose=1)
+          batch_size= BATCH_SIZE,
+          epochs= EPOCHS,
+          validation_split= 0.2,
+          callbacks= [tbCallBack],
+          verbose = 1)
 
-loss, acc = model.evaluate(x_val, y_val,
-                           batch_size=512)
+loss, acc=model.evaluate(x_val, y_val,
+                           batch_size = 512)
 
 print('Test loss / test accuracy = {:.4f} / {:.4f}'.format(loss, acc))
 
@@ -167,4 +167,4 @@ model.save(SAVE_DIR + "model.h5")
 
 # saving tokenizer
 with open(SAVE_DIR + 'tokenizer.pickle', 'wb') as handle:
-    pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    pickle.dump(tokenizer, handle, protocol = pickle.HIGHEST_PROTOCOL)
