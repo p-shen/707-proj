@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[4]:
+# In[6]:
 
 
 '''This script loads pre-trained word embeddings (GloVe embeddings)
@@ -25,6 +25,7 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
 from keras.layers import Dense, Input, GlobalMaxPooling1D
 from keras.layers import Conv1D, MaxPooling1D, Embedding, Dropout, GaussianNoise, regularizers
+from keras.optimizers import Adam
 from keras.models import Model
 from keras.models import load_model
 import datetime
@@ -159,7 +160,7 @@ model.compile(loss='binary_crossentropy',
 
 model.fit(x_train, y_train,
           batch_size=BATCH_SIZE,
-          epochs=50,
+          epochs=EPOCHS,
           validation_split=0.2,
           callbacks=[tbCallBack],
           verbose=1)
