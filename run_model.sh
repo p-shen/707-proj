@@ -13,4 +13,4 @@
 # use keras
 source ~/keras/bin/activate
 
-python modeling.py
+python modeling2.py
