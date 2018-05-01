@@ -40,11 +40,11 @@ MAX_SEQUENCE_LENGTH = 1000
 MAX_NUM_WORDS = 20000
 EMBEDDING_DIM = 100
 VALIDATION_SPLIT = 0.2
-EPOCHS = 100
-BATCH_SIZE = 128
+EPOCHS = 10
+BATCH_SIZE = 512
 
-data_x_file = "./data/data_x_10k.txt"
-data_y_cat = "./data/data_y_10k_binary.txt"
+data_x_file = "/home/pzs2/707/data/data_x.txt"
+data_y_cat = "/home/pzs2/707/data/data_y_binary.txt"
 
 
 # In[3]:
