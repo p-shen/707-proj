@@ -139,7 +139,7 @@ embedded_sequences = embedding_layer(sequence_input)
 
 
 print('Training model.')
-tbCallBack = TensorBoard(log_dir='./Graph/{}/'.format(st),
+tbCallBack = TensorBoard(log_dir='./Graph2/{}/'.format(st),
                          histogram_freq=0, write_graph=True, write_images=True)
 
 # train a 1D convnet with global maxpooling
