@@ -1,9 +1,6 @@
 
 # coding: utf-8
 
-# In[6]:
-
-
 '''This script loads pre-trained word embeddings (GloVe embeddings)
 into a frozen Keras Embedding layer, and uses it to
 train a text classification model.
@@ -31,7 +28,7 @@ from keras.models import load_model
 import datetime
 import time
 
-st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d')
+st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H')
 
 BASE_DIR = './'
 GLOVE_EMBEDDING = '/home/pzs2/702/702-medication-project/glove.6B/glove.6B.100d.txt'
@@ -40,14 +37,12 @@ MAX_SEQUENCE_LENGTH = 1000
 MAX_NUM_WORDS = 20000
 EMBEDDING_DIM = 100
 VALIDATION_SPLIT = 0.2
-EPOCHS = 20
+EPOCHS = 50
 BATCH_SIZE = 512
+NUM_HIDDEN_UNITS = 256
 
-data_x_file = "/home/pzs2/707/data/data_x.txt"
-data_y_cat = "/home/pzs2/707/data/data_y_binary.txt"
-
-
-# In[3]:
+data_x_file = "/home/pzs2/707/data/data_x_10k.txt"
+data_y_cat = "/home/pzs2/707/data/data_y_10k_binary.txt"
 
 
 # first, build index mapping words in the embeddings set
@@ -64,18 +59,12 @@ with open(GLOVE_EMBEDDING) as f:
 print('Found %s word vectors.' % len(embeddings_index))
 
 
-# In[ ]:
-
-
 # read in the text files
 texts_file = open(data_x_file, "r")
 texts = texts_file.readlines()
 texts_file.close()
 
 labels = np.loadtxt(data_y_cat)
-
-
-# In[25]:
 
 
 # prepare text samples and their labels
@@ -109,9 +98,6 @@ y_val = labels[-num_validation_samples:]
 y_train.reshape(len(y_train), 1).shape
 
 
-# In[ ]:
-
-
 # prepare embedding matrix
 num_words = min(MAX_NUM_WORDS, len(word_index) + 1)
 embedding_matrix = np.zeros((num_words, EMBEDDING_DIM))
@@ -135,22 +121,21 @@ sequence_input = Input(shape=(MAX_SEQUENCE_LENGTH,), dtype='float32')
 embedded_sequences = embedding_layer(sequence_input)
 
 
-# In[ ]:
-
-
 print('Training model.')
 tbCallBack = TensorBoard(log_dir='./Graph/{}/'.format(st),
                          histogram_freq=0, write_graph=True, write_images=True)
 
 # train a 1D convnet with global maxpooling
-x = Conv1D(128, 5, activation='relu')(embedded_sequences)
+x = Conv1D(NUM_HIDDEN_UNITS, 5, activation='relu')(embedded_sequences)
 x = GaussianNoise(0.1)(x)
 x = MaxPooling1D(5)(x)
 # x = Conv1D(128, 5, activation='relu', kernel_regularizer=regularizers.l1(0.05))(x)
-x = Conv1D(128, 5, activation='relu')(x)
+x = Conv1D(NUM_HIDDEN_UNITS, 5, activation='relu',
+           kernel_regularizer=regularizers.l1(0.01))(x)
 x = GlobalMaxPooling1D()(x)
+x = Dense(NUM_HIDDEN_UNITS, activation='relu')(x)
 x = Dropout(0.5)(x)
-x = Dense(128, activation='relu')(x)
+x = Dense(NUM_HIDDEN_UNITS, activation='relu')(x)
 preds = Dense(1, activation='sigmoid')(x)
 
 model = Model(sequence_input, preds)
@@ -170,9 +155,6 @@ loss, acc = model.evaluate(x_val, y_val,
                            batch_size=512)
 
 print('Test loss / test accuracy = {:.4f} / {:.4f}'.format(loss, acc))
-
-
-# In[10]:
 
 
 # save the model output
