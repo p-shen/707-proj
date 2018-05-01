@@ -127,15 +127,15 @@ tbCallBack = TensorBoard(log_dir='./Graph/{}/'.format(st),
 
 # train a 1D convnet with global maxpooling
 x = Conv1D(NUM_HIDDEN_UNITS, 5, activation='relu')(embedded_sequences)
-x = GaussianNoise(0.05)(x)
+# x = GaussianNoise(0.05)(x)
 x = MaxPooling1D(5)(x)
 x = Conv1D(NUM_HIDDEN_UNITS, 5, activation='relu')(x)
-x = MaxPooling1D(5)(x)
+# x = MaxPooling1D(5)(x)
 # x = Dropout(0.3)(x)
-x = Conv1D(NUM_HIDDEN_UNITS, 5, activation='relu')(x)
+# x = Conv1D(NUM_HIDDEN_UNITS, 5, activation='relu')(x)
 x = GlobalMaxPooling1D()(x)
 x = Dense(512, activation='relu')(x)
-x = Dropout(0.2)(x)
+x = Dropout(0.3)(x)
 x = Dense(NUM_HIDDEN_UNITS, activation='relu')(x)
 preds = Dense(1, activation='sigmoid')(x)
 
